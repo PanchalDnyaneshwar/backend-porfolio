@@ -16,7 +16,6 @@ async function bootstrap() {
     credentials: true,
   });
 
-  app.setGlobalPrefix('api');
   app.useGlobalPipes(new TrimBodyPipe());
 
   setupSwagger(app);
@@ -24,7 +23,7 @@ async function bootstrap() {
   const port = configService.get<number>('port') || 5000;
   await app.listen(port);
 
-  console.log(`Server running on http://localhost:${port}/api`);
-  console.log(`Swagger docs available at http://localhost:${port}/api/docs`);
+  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Swagger docs available at http://localhost:${port}/docs`);
 }
 bootstrap();
