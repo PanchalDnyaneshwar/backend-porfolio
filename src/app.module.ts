@@ -13,6 +13,7 @@ import { NewsletterModule } from './modules/newsletter/newsletter.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { MediaModule } from './modules/media/media.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { MailModule } from './modules/mail/mail.module';
 
 import appConfig from './config/app.config';
 import { envValidationSchema } from './config/env.validation';
@@ -43,6 +44,7 @@ import { AdminUserModule } from './modules/admin-user/admin-user.module';
   ProjectsModule,
   BlogsModule,
   ContactModule,
+  MailModule,
   NewsletterModule,
   SettingsModule,
   MediaModule,

@@ -10,16 +10,24 @@ import {
 import { CreateContactMessageDto } from './dto/create-contact-message.dto';
 import { UpdateContactMessageDto } from './dto/update-contact-message.dto';
 import { QueryContactMessageDto } from './dto/query-contact-message.dto';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class ContactService {
   constructor(
     @InjectModel(ContactMessage.name)
     private readonly contactMessageModel: Model<ContactMessageDocument>,
+    private readonly mailService: MailService,
   ) {}
 
   async create(createContactMessageDto: CreateContactMessageDto) {
     const message = await this.contactMessageModel.create(createContactMessageDto);
+    await this.mailService.sendContactNotification({
+      name: message.name,
+      email: message.email,
+      subject: message.subject,
+      message: message.message,
+    });
 
     return {
       message: MESSAGES.CONTACT.CREATED,

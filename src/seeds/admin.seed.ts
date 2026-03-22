@@ -11,7 +11,7 @@ async function bootstrap() {
 
   const adminUserModel = app.get<Model<AdminUser>>(getModelToken(AdminUser.name));
 
-  const email = 'admin@portfolio.com';
+  const email = 'panchaldnyaneshwar.m@gmail.com';
   const existingAdmin = await adminUserModel.findOne({ email });
 
   if (existingAdmin) {
@@ -20,7 +20,7 @@ async function bootstrap() {
     return;
   }
 
-  const hashedPassword = await bcrypt.hash('Admin@123', 10);
+  const hashedPassword = await bcrypt.hash('DP@admininfo&77', 10);
 
   await adminUserModel.create({
     name: 'Super Admin',

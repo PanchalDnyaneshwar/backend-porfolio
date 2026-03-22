@@ -11,8 +11,20 @@ async function bootstrap() {
   const frontendUrl = configService.get<string>('frontendUrl');
   const adminUrl = configService.get<string>('adminUrl');
 
+  const allowedOrigins = [frontendUrl, adminUrl].filter(Boolean) as string[];
+
   app.enableCors({
-    origin: [frontendUrl!, adminUrl!],
+    origin: (origin, callback) => {
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked: ${origin}`), false);
+    },
     credentials: true,
   });
 

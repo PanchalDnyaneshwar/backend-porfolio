@@ -88,4 +88,14 @@ export const MESSAGES = {
     DELETED: 'Media deleted successfully',
     NOT_FOUND: 'Media not found',
   },
+
+  MAIL: {
+    SENT: 'Email sent successfully',
+    TEMPLATE_CREATED: 'Email template created successfully',
+    TEMPLATE_UPDATED: 'Email template updated successfully',
+    TEMPLATE_DELETED: 'Email template deleted successfully',
+    TEMPLATE_FETCHED: 'Email templates fetched successfully',
+    TEMPLATE_NOT_FOUND: 'Email template not found',
+    LOG_FETCHED: 'Email history fetched successfully',
+  },
 };
