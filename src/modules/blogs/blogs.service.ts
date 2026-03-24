@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MESSAGES } from '../../common/constants/messages.constants';
 import { getPagination } from '../../common/utils/pagination.util';
+import { sanitizeHtml } from '../../common/utils/sanitize-html.util';
 import { generateSlug } from '../../common/utils/slug.util';
 import { calculateReadTime } from '../../common/utils/read-time.util';
 import { Blog, BlogDocument } from './schemas/blog.schema';
@@ -45,10 +46,12 @@ export class BlogsService {
 
     const blog = await this.blogModel.create({
       ...createBlogDto,
+      content: sanitizeHtml(createBlogDto.content) || '',
       slug,
       tags: this.normalizeTags(createBlogDto.tags),
       readTime:
-        createBlogDto.readTime || calculateReadTime(createBlogDto.content),
+        createBlogDto.readTime ||
+        calculateReadTime(sanitizeHtml(createBlogDto.content) || ''),
       publishedAt: shouldPublish
         ? createBlogDto.publishedAt
           ? new Date(createBlogDto.publishedAt)
@@ -63,14 +66,7 @@ export class BlogsService {
   }
 
   async findAll(query: QueryBlogDto, isPublic = false) {
-    const {
-      page = 1,
-      limit = 10,
-      category,
-      tag,
-      search,
-      isPublished,
-    } = query;
+    const { page = 1, limit = 10, category, tag, search, isPublished } = query;
 
     const { skip } = getPagination(page, limit);
     const filter: Record<string, any> = {};
@@ -178,6 +174,9 @@ export class BlogsService {
         id,
         {
           ...updateBlogDto,
+          content: updateBlogDto.content
+            ? sanitizeHtml(updateBlogDto.content)
+            : existingBlog.content,
           slug: nextSlug,
           tags: updateBlogDto.tags
             ? this.normalizeTags(updateBlogDto.tags)
@@ -185,7 +184,7 @@ export class BlogsService {
           readTime:
             updateBlogDto.readTime ||
             (updateBlogDto.content
-              ? calculateReadTime(updateBlogDto.content)
+              ? calculateReadTime(sanitizeHtml(updateBlogDto.content) || '')
               : existingBlog.readTime),
           publishedAt: nextPublishedAt,
         },

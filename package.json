@@ -17,7 +17,15 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "seed:profile": "ts-node -r tsconfig-paths/register src/seeds/profile.seed.ts",
+    "seed:settings": "ts-node -r tsconfig-paths/register src/seeds/settings.seed.ts",
+    "seed:skills": "ts-node -r tsconfig-paths/register src/seeds/skills.seed.ts",
+    "seed:experience": "ts-node -r tsconfig-paths/register src/seeds/experience.seed.ts",
+    "seed:projects": "ts-node -r tsconfig-paths/register src/seeds/projects.seed.ts",
+    "seed:blogs": "ts-node -r tsconfig-paths/register src/seeds/blogs.seed.ts",
+    "seed:media": "ts-node -r tsconfig-paths/register src/seeds/media.seed.ts",
+    "seed:all": "ts-node -r tsconfig-paths/register src/seeds/seed.all.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

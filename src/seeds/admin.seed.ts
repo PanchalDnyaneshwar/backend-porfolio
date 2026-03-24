@@ -9,7 +9,9 @@ import { Role } from '../common/enums/role.enum';
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
 
-  const adminUserModel = app.get<Model<AdminUser>>(getModelToken(AdminUser.name));
+  const adminUserModel = app.get<Model<AdminUser>>(
+    getModelToken(AdminUser.name),
+  );
 
   const email = 'panchaldnyaneshwar.m@gmail.com';
   const existingAdmin = await adminUserModel.findOne({ email });

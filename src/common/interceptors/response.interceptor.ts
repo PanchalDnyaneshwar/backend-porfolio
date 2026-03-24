@@ -8,9 +8,10 @@ import { map, Observable } from 'rxjs';
 import { buildResponse } from '../utils/response.util';
 
 @Injectable()
-export class ResponseInterceptor<T>
-  implements NestInterceptor<T, ReturnType<typeof buildResponse<T>>>
-{
+export class ResponseInterceptor<T> implements NestInterceptor<
+  T,
+  ReturnType<typeof buildResponse<T>>
+> {
   intercept(
     context: ExecutionContext,
     next: CallHandler,

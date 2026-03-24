@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { MongoIdValidationPipe } from '../../common/pipes/mongo-id-validation.pipe';
 import { MediaService } from './media.service';
 import { UploadMediaDto } from './dto/upload-media.dto';

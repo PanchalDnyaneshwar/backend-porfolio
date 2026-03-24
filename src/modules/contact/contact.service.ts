@@ -21,7 +21,9 @@ export class ContactService {
   ) {}
 
   async create(createContactMessageDto: CreateContactMessageDto) {
-    const message = await this.contactMessageModel.create(createContactMessageDto);
+    const message = await this.contactMessageModel.create(
+      createContactMessageDto,
+    );
     await this.mailService.sendContactNotification({
       name: message.name,
       email: message.email,

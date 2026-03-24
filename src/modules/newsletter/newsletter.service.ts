@@ -17,7 +17,10 @@ export class NewsletterService {
   async subscribe(subscribeDto: SubscribeNewsletterDto) {
     const email = subscribeDto.email.toLowerCase().trim();
 
-    const existing = await this.newsletterModel.findOne({ email }).lean().exec();
+    const existing = await this.newsletterModel
+      .findOne({ email })
+      .lean()
+      .exec();
 
     if (existing) {
       throw new ConflictException(MESSAGES.NEWSLETTER.ALREADY_EXISTS);

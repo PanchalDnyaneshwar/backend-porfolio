@@ -25,6 +25,9 @@ class ContactInfo {
 
   @Prop()
   location?: string;
+
+  @Prop()
+  mapUrl?: string;
 }
 
 @Schema({ timestamps: true })

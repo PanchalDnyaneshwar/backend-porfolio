@@ -34,6 +34,10 @@ class ContactInfoDto {
   @IsOptional()
   @IsString()
   location?: string;
+
+  @IsOptional()
+  @IsUrl({}, { message: 'Map URL must be valid' })
+  mapUrl?: string;
 }
 
 export class CreateSettingsDto {

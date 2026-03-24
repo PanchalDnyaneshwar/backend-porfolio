@@ -153,7 +153,9 @@ export class ProjectsService {
 
     if (updateProjectDto.slug || updateProjectDto.title) {
       nextSlug = generateSlug(
-        updateProjectDto.slug || updateProjectDto.title || existingProject.title,
+        updateProjectDto.slug ||
+          updateProjectDto.title ||
+          existingProject.title,
       );
       await this.ensureUniqueSlug(nextSlug, id);
     }

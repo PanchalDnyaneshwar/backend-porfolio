@@ -10,4 +10,3 @@ export class Newsletter {
 }
 
 export const NewsletterSchema = SchemaFactory.createForClass(Newsletter);
-

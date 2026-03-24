@@ -21,7 +21,9 @@ export class ContactController {
 
   @Public()
   @Post()
-  async createMessage(@Body() createContactMessageDto: CreateContactMessageDto) {
+  async createMessage(
+    @Body() createContactMessageDto: CreateContactMessageDto,
+  ) {
     return this.contactService.create(createContactMessageDto);
   }
 

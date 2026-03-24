@@ -22,7 +22,10 @@ export const envValidationSchema = Joi.object({
     then: Joi.required(),
     otherwise: Joi.optional().empty(''),
   }),
-  SMTP_FROM: Joi.string().email().optional().empty(''),
+  SMTP_FROM: Joi.alternatives()
+    .try(Joi.string().email(), Joi.string().pattern(/.+<[^>]+@[^>]+>/))
+    .optional()
+    .allow(''),
   SMTP_SECURE: Joi.boolean().optional(),
-  SMTP_NOTIFY_TO: Joi.string().email().optional().empty(''),
+  SMTP_NOTIFY_TO: Joi.string().email().optional().allow(''),
 });

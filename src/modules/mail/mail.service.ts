@@ -13,10 +13,14 @@ import { SendMailDto } from './dto/send-mail.dto';
 import { CreateEmailTemplateDto } from './dto/create-email-template.dto';
 import { UpdateEmailTemplateDto } from './dto/update-email-template.dto';
 import { QueryEmailLogDto } from './dto/query-email-log.dto';
-import { EmailTemplate, EmailTemplateDocument } from './schemas/email-template.schema';
+import {
+  EmailTemplate,
+  EmailTemplateDocument,
+} from './schemas/email-template.schema';
 import { EmailLog, EmailLogDocument } from './schemas/email-log.schema';
 import { getPagination } from '../../common/utils/pagination.util';
 import { MESSAGES } from '../../common/constants/messages.constants';
+import { sanitizeHtml } from '../../common/utils/sanitize-html.util';
 
 @Injectable()
 export class MailService {
@@ -74,6 +78,7 @@ export class MailService {
     const from =
       this.configService.get<string>('smtpFrom') ||
       this.configService.get<string>('smtpUser');
+    const sanitizedHtml = sanitizeHtml(payload.html);
 
     if (!from) {
       throw new ServiceUnavailableException(
@@ -87,14 +92,14 @@ export class MailService {
         to: payload.to,
         subject: payload.subject,
         text: payload.message,
-        html: payload.html,
+        html: sanitizedHtml,
         replyTo: payload.replyTo,
       });
       await this.logModel.create({
         to: payload.to,
         subject: payload.subject,
         message: payload.message,
-        html: payload.html,
+        html: sanitizedHtml,
         status: 'SENT',
       });
     } catch (error) {
@@ -103,7 +108,7 @@ export class MailService {
         to: payload.to,
         subject: payload.subject,
         message: payload.message,
-        html: payload.html,
+        html: sanitizedHtml,
         status: 'FAILED',
         error: (error as Error)?.message ?? 'Unknown error',
       });
@@ -148,7 +153,10 @@ export class MailService {
   }
 
   async createTemplate(dto: CreateEmailTemplateDto) {
-    const template = await this.templateModel.create(dto);
+    const template = await this.templateModel.create({
+      ...dto,
+      html: sanitizeHtml(dto.html) || '',
+    });
     return {
       message: MESSAGES.MAIL.TEMPLATE_CREATED,
       data: template,
@@ -156,7 +164,11 @@ export class MailService {
   }
 
   async getTemplates() {
-    const templates = await this.templateModel.find().sort({ createdAt: -1 }).lean().exec();
+    const templates = await this.templateModel
+      .find()
+      .sort({ createdAt: -1 })
+      .lean()
+      .exec();
     return {
       message: MESSAGES.MAIL.TEMPLATE_FETCHED,
       data: templates,
@@ -165,7 +177,14 @@ export class MailService {
 
   async updateTemplate(id: string, dto: UpdateEmailTemplateDto) {
     const template = await this.templateModel
-      .findByIdAndUpdate(id, dto, { new: true, runValidators: true })
+      .findByIdAndUpdate(
+        id,
+        {
+          ...dto,
+          html: dto.html ? sanitizeHtml(dto.html) : dto.html,
+        },
+        { new: true, runValidators: true },
+      )
       .exec();
 
     if (!template) {

@@ -15,7 +15,9 @@ export const multerFileFilter = (
 ) => {
   if (!allowedMimeTypes.includes(file.mimetype)) {
     return callback(
-      new BadRequestException('Only image files are allowed') as unknown as Error,
+      new BadRequestException(
+        'Only image files are allowed',
+      ) as unknown as Error,
       false,
     );
   }

@@ -9,7 +9,11 @@ export class Skill {
   @Prop({ required: true, trim: true })
   name: string;
 
-  @Prop({ required: true, enum: SkillCategory })
+  @Prop({
+    type: String,
+    required: true,
+    enum: Object.values(SkillCategory),
+  })
   category: SkillCategory;
 
   @Prop({ trim: true })

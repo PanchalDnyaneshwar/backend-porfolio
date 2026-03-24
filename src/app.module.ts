@@ -1,8 +1,17 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { RateLimitMiddleware } from './common/middleware/rate-limit.middleware';
+import { SecurityHeadersMiddleware } from './common/middleware/security-headers.middleware';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { ProfileModule } from './modules/profile/profile.module';
 import { SkillsModule } from './modules/skills/skills.module';
 import { ExperienceModule } from './modules/experience/experience.module';
@@ -29,28 +38,30 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AdminUserModule } from './modules/admin-user/admin-user.module';
 
 @Module({
- imports: [
-  ConfigModule.forRoot({
-    isGlobal: true,
-    load: [appConfig],
-    validationSchema: envValidationSchema,
-  }),
-  DatabaseModule,
-  AdminUserModule,
-  AuthModule,
-  ProfileModule,
-  SkillsModule,
-  ExperienceModule,
-  ProjectsModule,
-  BlogsModule,
-  ContactModule,
-  MailModule,
-  NewsletterModule,
-  SettingsModule,
-  MediaModule,
-  DashboardModule,
-],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [appConfig],
+      validationSchema: envValidationSchema,
+    }),
+    DatabaseModule,
+    AdminUserModule,
+    AuthModule,
+    ProfileModule,
+    SkillsModule,
+    ExperienceModule,
+    ProjectsModule,
+    BlogsModule,
+    ContactModule,
+    MailModule,
+    NewsletterModule,
+    SettingsModule,
+    MediaModule,
+    DashboardModule,
+  ],
+  controllers: [AppController],
   providers: [
+    AppService,
     {
       provide: APP_PIPE,
       useFactory: () =>
@@ -84,6 +95,11 @@ import { AdminUserModule } from './modules/admin-user/admin-user.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*');
+    consumer.apply(SecurityHeadersMiddleware, LoggerMiddleware).forRoutes('*');
+    consumer.apply(RateLimitMiddleware).forRoutes(
+      { path: 'auth/login', method: RequestMethod.POST },
+      { path: 'contact', method: RequestMethod.POST },
+      { path: 'newsletter/subscribe', method: RequestMethod.POST },
+    );
   }
 }
