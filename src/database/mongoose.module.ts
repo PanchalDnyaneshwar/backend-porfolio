@@ -8,6 +8,9 @@ import { ConfigService } from '@nestjs/config';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         uri: configService.get<string>('mongodbUri'),
+        serverSelectionTimeoutMS: 10_000,
+        maxPoolSize: 10,
+        maxIdleTimeMS: 60_000,
       }),
     }),
   ],

@@ -6,7 +6,8 @@ import {
   MaxLength,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
+import { emptyStringToUndefined } from '../../../common/transformers/empty-string-to-undefined';
 
 class SeoDto {
   @IsOptional()
@@ -36,6 +37,7 @@ class ContactInfoDto {
   location?: string;
 
   @IsOptional()
+  @Transform(emptyStringToUndefined)
   @IsUrl({}, { message: 'Map URL must be valid' })
   mapUrl?: string;
 }
@@ -52,10 +54,12 @@ export class CreateSettingsDto {
   siteDescription?: string;
 
   @IsOptional()
+  @Transform(emptyStringToUndefined)
   @IsUrl({}, { message: 'Logo URL must be valid' })
   logo?: string;
 
   @IsOptional()
+  @Transform(emptyStringToUndefined)
   @IsUrl({}, { message: 'Favicon URL must be valid' })
   favicon?: string;
 

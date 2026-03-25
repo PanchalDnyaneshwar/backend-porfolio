@@ -9,6 +9,8 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { emptyStringToUndefined } from '../../../common/transformers/empty-string-to-undefined';
 
 export class CreateProjectDto {
   @IsString()
@@ -30,6 +32,7 @@ export class CreateProjectDto {
   fullDescription?: string;
 
   @IsOptional()
+  @Transform(emptyStringToUndefined)
   @IsUrl({}, { message: 'Thumbnail URL must be valid' })
   thumbnail?: string;
 
@@ -48,10 +51,12 @@ export class CreateProjectDto {
   category?: string;
 
   @IsOptional()
+  @Transform(emptyStringToUndefined)
   @IsUrl({}, { message: 'Live URL must be valid' })
   liveUrl?: string;
 
   @IsOptional()
+  @Transform(emptyStringToUndefined)
   @IsUrl({}, { message: 'GitHub URL must be valid' })
   githubUrl?: string;
 

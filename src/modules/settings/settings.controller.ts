@@ -3,6 +3,7 @@ import { Public } from '../../common/decorators/public.decorator';
 import { SettingsService } from './settings.service';
 import { CreateSettingsDto } from './dto/create-settings.dto';
 import { UpdateSettingsDto } from './dto/update-settings.dto';
+import { StripMongoFieldsPipe } from '../../common/pipes/strip-mongo-fields.pipe';
 
 @Controller('settings')
 export class SettingsController {
@@ -20,12 +21,16 @@ export class SettingsController {
   }
 
   @Post()
-  async createSettings(@Body() createSettingsDto: CreateSettingsDto) {
+  async createSettings(
+    @Body(new StripMongoFieldsPipe()) createSettingsDto: CreateSettingsDto,
+  ) {
     return this.settingsService.create(createSettingsDto);
   }
 
   @Put()
-  async updateSettings(@Body() updateSettingsDto: UpdateSettingsDto) {
+  async updateSettings(
+    @Body(new StripMongoFieldsPipe()) updateSettingsDto: UpdateSettingsDto,
+  ) {
     return this.settingsService.update(updateSettingsDto);
   }
 }

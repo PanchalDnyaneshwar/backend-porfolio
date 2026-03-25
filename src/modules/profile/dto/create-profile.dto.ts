@@ -7,22 +7,27 @@ import {
   MaxLength,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
+import { emptyStringToUndefined } from '../../../common/transformers/empty-string-to-undefined';
 
 class SocialLinksDto {
   @IsOptional()
+  @Transform(emptyStringToUndefined)
   @IsUrl({}, { message: 'GitHub URL must be valid' })
   github?: string;
 
   @IsOptional()
+  @Transform(emptyStringToUndefined)
   @IsUrl({}, { message: 'LinkedIn URL must be valid' })
   linkedin?: string;
 
   @IsOptional()
+  @Transform(emptyStringToUndefined)
   @IsUrl({}, { message: 'Twitter URL must be valid' })
   twitter?: string;
 
   @IsOptional()
+  @Transform(emptyStringToUndefined)
   @IsUrl({}, { message: 'Portfolio URL must be valid' })
   portfolio?: string;
 }
@@ -59,10 +64,12 @@ export class CreateProfileDto {
   location?: string;
 
   @IsOptional()
+  @Transform(emptyStringToUndefined)
   @IsUrl({}, { message: 'Profile image URL must be valid' })
   profileImage?: string;
 
   @IsOptional()
+  @Transform(emptyStringToUndefined)
   @IsUrl({}, { message: 'Resume URL must be valid' })
   resumeUrl?: string;
 

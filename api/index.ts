@@ -1,8 +1,11 @@
+import type { INestApplication } from '@nestjs/common';
 import express, { Request, Response } from 'express';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { createApp } from '../src/app.factory';
 
 let cachedServer: express.Express | null = null;
+/** Retained so the Nest application graph is not GC'd between invocations. */
+let cachedNestApp: INestApplication | null = null;
 let bootstrapPromise: Promise<express.Express> | null = null;
 
 async function getServer() {
@@ -13,8 +16,8 @@ async function getServer() {
   if (!bootstrapPromise) {
     bootstrapPromise = (async () => {
       const server = express();
-      await createApp(new ExpressAdapter(server));
-
+      const nestApp = await createApp(new ExpressAdapter(server));
+      cachedNestApp = nestApp;
       cachedServer = server;
       return server;
     })();

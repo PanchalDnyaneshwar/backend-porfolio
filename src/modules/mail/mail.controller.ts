@@ -14,6 +14,7 @@ import { CreateEmailTemplateDto } from './dto/create-email-template.dto';
 import { UpdateEmailTemplateDto } from './dto/update-email-template.dto';
 import { MongoIdValidationPipe } from '../../common/pipes/mongo-id-validation.pipe';
 import { QueryEmailLogDto } from './dto/query-email-log.dto';
+import { StripMongoFieldsPipe } from '../../common/pipes/strip-mongo-fields.pipe';
 
 @Controller('mail')
 export class MailController {
@@ -30,14 +31,16 @@ export class MailController {
   }
 
   @Post('templates')
-  async createTemplate(@Body() dto: CreateEmailTemplateDto) {
+  async createTemplate(
+    @Body(new StripMongoFieldsPipe()) dto: CreateEmailTemplateDto,
+  ) {
     return this.mailService.createTemplate(dto);
   }
 
   @Put('templates/:id')
   async updateTemplate(
     @Param('id', MongoIdValidationPipe) id: string,
-    @Body() dto: UpdateEmailTemplateDto,
+    @Body(new StripMongoFieldsPipe()) dto: UpdateEmailTemplateDto,
   ) {
     return this.mailService.updateTemplate(id, dto);
   }

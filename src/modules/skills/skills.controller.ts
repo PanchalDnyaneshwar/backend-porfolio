@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { Public } from '../../common/decorators/public.decorator';
 import { MongoIdValidationPipe } from '../../common/pipes/mongo-id-validation.pipe';
+import { StripMongoFieldsPipe } from '../../common/pipes/strip-mongo-fields.pipe';
 import { SkillsService } from './skills.service';
 import { CreateSkillDto } from './dto/create-skill.dto';
 import { UpdateSkillDto } from './dto/update-skill.dto';
@@ -36,14 +37,16 @@ export class SkillsController {
   }
 
   @Post()
-  async createSkill(@Body() createSkillDto: CreateSkillDto) {
+  async createSkill(
+    @Body(new StripMongoFieldsPipe()) createSkillDto: CreateSkillDto,
+  ) {
     return this.skillsService.create(createSkillDto);
   }
 
   @Put(':id')
   async updateSkill(
     @Param('id', MongoIdValidationPipe) id: string,
-    @Body() updateSkillDto: UpdateSkillDto,
+    @Body(new StripMongoFieldsPipe()) updateSkillDto: UpdateSkillDto,
   ) {
     return this.skillsService.update(id, updateSkillDto);
   }

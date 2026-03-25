@@ -10,6 +10,8 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { emptyStringToUndefined } from '../../../common/transformers/empty-string-to-undefined';
 
 export class CreateBlogDto {
   @IsString()
@@ -31,6 +33,7 @@ export class CreateBlogDto {
   content: string;
 
   @IsOptional()
+  @Transform(emptyStringToUndefined)
   @IsUrl({}, { message: 'Featured image URL must be valid' })
   featuredImage?: string;
 

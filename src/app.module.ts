@@ -37,6 +37,7 @@ import { RolesGuard } from './common/guards/roles.guard';
 
 import { AuthModule } from './modules/auth/auth.module';
 import { AdminUserModule } from './modules/admin-user/admin-user.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -44,6 +45,15 @@ import { AdminUserModule } from './modules/admin-user/admin-user.module';
       isGlobal: true,
       load: [appConfig, cloudinaryConfig],
       validationSchema: envValidationSchema,
+    }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          name: 'global',
+          ttl: 60_000,
+          limit: 100,
+        },
+      ],
     }),
     DatabaseModule,
     AdminUserModule,
@@ -83,6 +93,10 @@ import { AdminUserModule } from './modules/admin-user/admin-user.module';
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
     {
       provide: APP_GUARD,
