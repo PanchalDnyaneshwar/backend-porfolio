@@ -6,6 +6,7 @@ export default () => ({
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   frontendUrl: process.env.FRONTEND_URL,
   adminUrl: process.env.ADMIN_URL,
+  additionalCorsOrigins: process.env.ADDITIONAL_CORS_ORIGINS,
   smtpHost: process.env.SMTP_HOST,
   smtpPort: parseInt(process.env.SMTP_PORT || '587', 10),
   smtpUser: process.env.SMTP_USER,

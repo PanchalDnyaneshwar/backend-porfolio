@@ -9,6 +9,37 @@ import { createBootstrapLogger } from './common/logging/app-logger.factory';
 import { TrimBodyPipe } from './common/pipes/trim-body.pipe';
 import { setupSwagger } from './docs/swagger';
 
+/** Normalize to browser Origin form: scheme + host (no path, no trailing slash). */
+function normalizeWebOrigin(raw: string): string | null {
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  try {
+    const u = new URL(trimmed);
+    return `${u.protocol}//${u.host}`;
+  } catch {
+    return null;
+  }
+}
+
+function buildAllowedOriginSet(
+  frontendUrl: string | undefined,
+  adminUrl: string | undefined,
+  additionalCsv: string | undefined,
+): Set<string> {
+  const set = new Set<string>();
+  for (const url of [frontendUrl, adminUrl]) {
+    const n = url ? normalizeWebOrigin(url) : null;
+    if (n) set.add(n);
+  }
+  if (additionalCsv) {
+    for (const part of additionalCsv.split(',')) {
+      const n = normalizeWebOrigin(part);
+      if (n) set.add(n);
+    }
+  }
+  return set;
+}
+
 export async function createApp(httpAdapter?: AbstractHttpAdapter) {
   const logger = createBootstrapLogger();
   const app = httpAdapter
@@ -46,7 +77,12 @@ export function configureApp(app: INestApplication) {
 
   const frontendUrl = configService.get<string>('frontendUrl');
   const adminUrl = configService.get<string>('adminUrl');
-  const allowedOrigins = [frontendUrl, adminUrl].filter(Boolean) as string[];
+  const additionalCorsOrigins = configService.get<string>('additionalCorsOrigins');
+  const allowedOriginSet = buildAllowedOriginSet(
+    frontendUrl,
+    adminUrl,
+    additionalCorsOrigins,
+  );
 
   app.enableCors({
     origin: (origin, callback) => {
@@ -54,7 +90,8 @@ export function configureApp(app: INestApplication) {
         return callback(null, true);
       }
 
-      if (allowedOrigins.includes(origin)) {
+      const normalized = normalizeWebOrigin(origin);
+      if (normalized && allowedOriginSet.has(normalized)) {
         return callback(null, true);
       }
 
