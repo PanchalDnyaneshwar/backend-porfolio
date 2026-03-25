@@ -10,6 +10,7 @@ export const envValidationSchema = Joi.object({
   JWT_EXPIRES_IN: Joi.string().default('7d'),
   FRONTEND_URL: Joi.string().required(),
   ADMIN_URL: Joi.string().required(),
+  CLOUDINARY_URL: Joi.string().optional().allow(''),
   CLOUDINARY_CLOUD_NAME: Joi.string().empty('').optional(),
   CLOUDINARY_API_KEY: Joi.string().when('CLOUDINARY_CLOUD_NAME', {
     is: Joi.string().min(1),
