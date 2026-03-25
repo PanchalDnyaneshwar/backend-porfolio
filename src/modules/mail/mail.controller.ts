@@ -51,4 +51,9 @@ export class MailController {
   async getLogs(@Query() query: QueryEmailLogDto) {
     return this.mailService.getLogs(query);
   }
+
+  @Get('status')
+  async getStatus() {
+    return this.mailService.getStatus();
+  }
 }

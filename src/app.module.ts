@@ -25,6 +25,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { MailModule } from './modules/mail/mail.module';
 
 import appConfig from './config/app.config';
+import cloudinaryConfig from './config/cloudinary.config';
 import { envValidationSchema } from './config/env.validation';
 import { DatabaseModule } from './database/mongoose.module';
 
@@ -41,7 +42,7 @@ import { AdminUserModule } from './modules/admin-user/admin-user.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig],
+      load: [appConfig, cloudinaryConfig],
       validationSchema: envValidationSchema,
     }),
     DatabaseModule,

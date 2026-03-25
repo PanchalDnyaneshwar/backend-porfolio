@@ -10,6 +10,18 @@ export const envValidationSchema = Joi.object({
   JWT_EXPIRES_IN: Joi.string().default('7d'),
   FRONTEND_URL: Joi.string().required(),
   ADMIN_URL: Joi.string().required(),
+  CLOUDINARY_CLOUD_NAME: Joi.string().empty('').optional(),
+  CLOUDINARY_API_KEY: Joi.string().when('CLOUDINARY_CLOUD_NAME', {
+    is: Joi.string().min(1),
+    then: Joi.required(),
+    otherwise: Joi.optional().empty(''),
+  }),
+  CLOUDINARY_API_SECRET: Joi.string().when('CLOUDINARY_CLOUD_NAME', {
+    is: Joi.string().min(1),
+    then: Joi.required(),
+    otherwise: Joi.optional().empty(''),
+  }),
+  CLOUDINARY_FOLDER: Joi.string().optional().allow(''),
   SMTP_HOST: Joi.string().empty('').optional(),
   SMTP_PORT: Joi.number().default(587),
   SMTP_USER: Joi.string().when('SMTP_HOST', {

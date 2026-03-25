@@ -16,6 +16,18 @@ export class Media {
 
   @Prop()
   publicId?: string;
+
+  @Prop()
+  fileName?: string;
+
+  @Prop()
+  format?: string;
+
+  @Prop()
+  bytes?: number;
+
+  @Prop()
+  resourceType?: string;
 }
 
 export const MediaSchema = SchemaFactory.createForClass(Media);

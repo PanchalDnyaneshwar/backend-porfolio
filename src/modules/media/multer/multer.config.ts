@@ -6,6 +6,16 @@ const allowedMimeTypes = [
   'image/webp',
   'image/jpg',
   'image/svg+xml',
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'text/plain',
+  'application/zip',
+  'application/x-zip-compressed',
 ];
 
 export const multerFileFilter = (
@@ -16,7 +26,7 @@ export const multerFileFilter = (
   if (!allowedMimeTypes.includes(file.mimetype)) {
     return callback(
       new BadRequestException(
-        'Only image files are allowed',
+        'Unsupported file type. Upload an image, PDF, document, spreadsheet, presentation, text file, or ZIP archive.',
       ) as unknown as Error,
       false,
     );
@@ -26,5 +36,5 @@ export const multerFileFilter = (
 };
 
 export const multerLimits = {
-  fileSize: 5 * 1024 * 1024,
+  fileSize: 10 * 1024 * 1024,
 };

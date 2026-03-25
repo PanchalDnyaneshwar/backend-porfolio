@@ -234,4 +234,23 @@ export class MailService {
       },
     };
   }
+
+  getStatus() {
+    const host = this.configService.get<string>('smtpHost')?.trim();
+    const port = Number(this.configService.get<number>('smtpPort') || 587);
+    const user = this.configService.get<string>('smtpUser')?.trim();
+    const from =
+      this.configService.get<string>('smtpFrom') ||
+      this.configService.get<string>('smtpUser');
+
+    return {
+      message: 'Mail service status fetched successfully',
+      data: {
+        configured: Boolean(host && user && this.configService.get<string>('smtpPass')),
+        host: host || null,
+        port,
+        from: from || null,
+      },
+    };
+  }
 }
