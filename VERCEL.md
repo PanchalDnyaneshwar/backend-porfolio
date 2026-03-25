@@ -1,25 +1,24 @@
 # Deploy this Nest API on Vercel
 
-This app is exposed as a **serverless function** via [`api/index.ts`](api/index.ts) and [`vercel.json`](vercel.json) rewrites. It is **not** a static site: `nest build` writes to `dist/`, and there is **no** `public/` output folder.
+This app is exposed as a **serverless function** via [`api/index.ts`](api/index.ts) and [`vercel.json`](vercel.json) rewrites. `nest build` still writes to `dist/` for local `start:prod`; on Vercel, some project presets still run a **static output check** and expect an `outputDirectory` that exists after the build step.
 
 ## Error: “No Output Directory named public”
 
-That happens when the Vercel project is configured like a **static frontend** (Output Directory = `public`, or a framework preset that implies it).
+Vercel may require a **`public`** directory to exist after `npm run build` when the project (or dashboard) targets that output folder.
 
-### Fix in the Vercel dashboard
+### Fix in the repo (already applied)
 
-1. Open the project → **Settings** → **General** → **Build & Development Settings**.
-2. **Framework Preset**: choose **Other**, or leave detection but ensure **Output Directory** is not forced to `public`.
-3. **Output Directory**: **clear it** (empty). Do not set `public`.
-4. **Build Command**: `npm run build` (optional but recommended to typecheck/compile).
-5. **Install Command**: `npm install` (default).
-6. **Root Directory**: set to the folder that contains this `package.json` and `vercel.json` (often the repo root for a backend-only repo).
+- A committed [`public/`](public/) folder (with `.gitkeep`) exists so the directory is present after clone/build.
+- [`vercel.json`](vercel.json) sets `"outputDirectory": "public"` so the build step satisfies Vercel’s check.
+- **All HTTP routes** are still rewritten to `/api/index.ts`, so the API handles traffic; the `public` folder is not used for your REST API surface.
 
-Redeploy.
+### Fix in the Vercel dashboard (if it still fails)
 
-### Fix in the repo
-
-[`vercel.json`](vercel.json) includes `framework: null`, `outputDirectory: null`, and `buildCommand` so CLI/Git deployments align with an API-only project. If the dashboard still overrides settings, clear overrides there.
+1. **Settings** → **General** → **Build & Development Settings**
+2. **Framework Preset**: **Other**
+3. **Output Directory**: either leave empty (repo `vercel.json` supplies `public`) or set to **`public`** to match the repo.
+4. **Build Command**: `npm run build`
+5. **Root Directory**: folder that contains this `vercel.json` and `package.json`.
 
 ## After deploy — smoke test
 
