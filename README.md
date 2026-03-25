@@ -25,6 +25,10 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Deploy to Vercel (API / serverless)
+
+This backend uses `api/index.ts` + `vercel.json` rewrites. If Vercel fails with **“No Output Directory named public”**, the project is misconfigured as a static site: clear **Output Directory** in the Vercel dashboard and use **Other** (or rely on repo `vercel.json`). See **[VERCEL.md](./VERCEL.md)** for step-by-step dashboard settings and smoke tests.
+
 ## Project setup
 
 ```bash
