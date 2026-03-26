@@ -6,7 +6,7 @@ import { AppModule } from '../app.module';
 import { AdminUser } from '../modules/admin-user/schemas/admin-user.schema';
 import { Role } from '../common/enums/role.enum';
 
-async function bootstrap() {
+export const runSeed = async () => {
   const app = await NestFactory.createApplicationContext(AppModule);
 
   const adminUserModel = app.get<Model<AdminUser>>(
@@ -34,6 +34,13 @@ async function bootstrap() {
 
   console.log('Admin user seeded successfully');
   await app.close();
-}
+};
 
-bootstrap();
+if (process.argv[1]?.includes('admin.seed')) {
+  runSeed()
+    .then(() => process.exit(0))
+    .catch((err) => {
+      console.error(err);
+      process.exit(1);
+    });
+}

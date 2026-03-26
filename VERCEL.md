@@ -17,7 +17,7 @@ Vercel may require a **`public`** directory to exist after `npm run build` when 
 1. **Settings** → **General** → **Build & Development Settings**
 2. **Framework Preset**: **Other**
 3. **Output Directory**: either leave empty (repo `vercel.json` supplies `public`) or set to **`public`** to match the repo.
-4. **Build Command**: `npm run build`
+4. **Build Command**: leave default so it matches the repo — [`vercel.json`](vercel.json) runs `npm run build && npm run seed:dist` (compile Nest, then run compiled seeds against Mongo).
 5. **Root Directory**: folder that contains this `vercel.json` and `package.json`.
 
 ## After deploy — smoke test
@@ -34,3 +34,11 @@ You should get JSON from the API, not a static-file error.
 ## Environment variables
 
 Set the same variables as local production (e.g. `MONGODB_URI`, `JWT_SECRET`, `FRONTEND_URL`, `ADMIN_URL`, etc.) in **Settings → Environment Variables** for Production (and Preview if needed).
+
+### Build-time seeding (`seed:dist`)
+
+The Vercel build runs [`src/seeds/seed.all.ts`](src/seeds/seed.all.ts) after `nest build` via `npm run seed:dist`. That step bootstraps `AppModule` and requires **the same env validation as runtime** (`MONGODB_URI`, `JWT_SECRET`, `FRONTEND_URL`, `ADMIN_URL`, and any other required keys from [`src/config/env.validation.ts`](src/config/env.validation.ts)). Ensure those variables are available for the **Production** (and **Preview**, if you deploy previews) **build** environment, not only for the runtime function.
+
+Seeds are idempotent (they skip when data already exists). If Mongo is unreachable during build, the deploy fails explicitly instead of shipping a half-seeded app.
+
+Locally, `npm run build` does **not** run seeds; use `npm run build && npm run seed:dist` when you want the same behavior as Vercel.
