@@ -40,6 +40,26 @@ function buildAllowedOriginSet(
   return set;
 }
 
+/** In development, treat localhost and 127.0.0.1 as the same origin for CORS. */
+function addLoopbackAliases(allowedOriginSet: Set<string>): void {
+  const aliases: string[] = [];
+  for (const origin of allowedOriginSet) {
+    try {
+      const u = new URL(origin);
+      if (u.hostname === 'localhost') {
+        u.hostname = '127.0.0.1';
+        aliases.push(`${u.protocol}//${u.host}`);
+      } else if (u.hostname === '127.0.0.1') {
+        u.hostname = 'localhost';
+        aliases.push(`${u.protocol}//${u.host}`);
+      }
+    } catch {
+      // skip invalid
+    }
+  }
+  for (const a of aliases) allowedOriginSet.add(a);
+}
+
 export async function createApp(httpAdapter?: AbstractHttpAdapter) {
   const logger = createBootstrapLogger();
   const app = httpAdapter
@@ -83,6 +103,9 @@ export function configureApp(app: INestApplication) {
     adminUrl,
     additionalCorsOrigins,
   );
+  if (nodeEnv === 'development') {
+    addLoopbackAliases(allowedOriginSet);
+  }
 
   app.enableCors({
     origin: (origin, callback) => {
